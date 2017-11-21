@@ -10,13 +10,19 @@ redis-server --yes
 RUN ln -s `which nodejs` /usr/bin/node
 
 # Non-privileged user
-RUN useradd -m audiogram
-USER audiogram
-WORKDIR /home/audiogram
+RUN mkdir audiogram
+WORKDIR /home/root/audiogram
 
 # Clone repo
-RUN git clone https://github.com/nypublicradio/audiogram.git
-WORKDIR /home/audiogram/audiogram
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
+
+# install code
+COPY . .
+RUN npm build
+
+EXPOSE 8888
+
+CMD npm start
